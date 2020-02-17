@@ -1,0 +1,93 @@
+'The tidyverse
+' Install with install.packages("tidyverse")
+' Load with library(tidyverse)
+' Update with tidyverse_update()
+
+'ggplot2 - The grammar of graphics
+' ggplot(data = <DATA>) +
+'    <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+'Note: each geom_function has its own mapping arguments to add a layer to the plot, 
+'
+' Examples:
+'  Scatterplot (geom_point)
+'    ggplot(data=mpg)+geom_point(mapping=aes(x=displ, y=hwy))
+'    ggplot(........)+geom_point(........aes(.............., color|size|shape = class))
+'    ggplot(........)+geom_point(........aes(..............), color|size|shape = .....))
+'    Use ?geom_point for more options.
+'  Facet wrapping
+'    ggplot(data=mpg)+geom_point(mapping=aes(x=displ, y=hwy)) + facet_grid(drv~class)
+
+'First script: Import ADNS spreadsheet. Note: the xls file downloaded from ADNS does not 'conform to the standard for this filetype. It can be converted to a valid MS xls or ' 'xlsx file by opening and saving it in MS Excel.
+library(tidyverse)
+library(readxl)
+outbreaks <- read_excel("Documents/Mapping/ADNS/outbreaks.xlsx", 
+    col_types = c("text", "text", "numeric", 
+        "numeric", "text", "numeric", "skip", 
+        "text", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "numeric", 
+        "skip", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "text", 
+        "numeric", "text", "numeric", "numeric", 
+        "numeric", "numeric", "text", "text", 
+        "numeric", "text", "numeric", "numeric", 
+        "numeric", "numeric", "text", "text", 
+        "text", "text", "text", "text", "text", 
+        "text", "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "skip", "skip", 
+        "skip", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "skip", 
+        "skip", "skip", "skip", "skip", 
+        "skip", "skip", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "text", "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "text", "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "date", "numeric"))
+View(outbreaks)
+outbreaks1 <- rename(outbreaks, AffReg="Affected region")
+ggplot(outbreaks1, aes(Disease))+geom_bar(aes(fill=AffReg))
+
+'Second script: Import ADNS XML file. Note: the XML file refers to countries, diseases, 'LVUs and regions by code. To convert these values to text requires separate look up 'tables.
+
+library(xml2)
+outbreaks <- read_xml("Downloads/ADNS_Export(2).xml")
+Animal <- xml_find_all(outbreaks, "//outbreak/an")
+Species <- xml_text(xml_find_all(outbreaks, "//outbreak/an/@spec"))
+
+'Third script: Import ADNS system data from the files downloaded to the
+'Documents|Mapping|ADNS|ADNS_sysfiles folder.
+
+library(readxl)
+xlADNSdd <- "Documents/Mapping/ADNS/ADNS_sysfiles/ADNS XML data dictionary 0.7.xls"
+dfNodes <- read_excel(xlADNSdd, sheet = "Outbreak", range = "B8:C31")
+dfSpecies <- read_excel(xlADNSdd, sheet = "simple types", range = "C14:D28")
+xlADNSsf <- "Documents/Mapping/ADNS/ADNS_sysfiles/ADNS_REFERENCE_DATA.xls"
+dfCountries <- read_excel(xlADNSsf, sheet = "Country")
+dfRegions <- read_excel(xlADNSsf, sheet = "Region")
+dfDiseases <- read_excel(xlADNSsf, sheet = "Disease")
+dfLVUs <- read_excel(xlADNSsf, sheet = "Traces_LVU")
+
+'script 4 - parse xml
+doc <- xmlParse("Downloads/ADNS_Export(2).xml")
+
+
+
+
